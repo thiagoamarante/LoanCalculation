@@ -15,9 +15,12 @@ namespace Loan
                 InterestRate = parameters.InterestRate,
                 LoanTerm = parameters.LoanTerm,
                 PropertyValue = parameters.PropertyValue,
-                DownPayment = parameters.DownPayment,
-                PropertyTaxPercent = parameters.PropertyTaxPercent,
-                PMIPercent = parameters.PMIPercent,
+
+                DownPayment = parameters.DownPayment,           
+                PropertyTax = parameters.PropertyTax,
+                Insurance = parameters.Insurance,
+                CondoTax = parameters.CondoTax,
+
                 StartLoan = parameters.StartLoan
             };
 
@@ -28,12 +31,13 @@ namespace Loan
             summary.DownPaymentPercent = (parameters.DownPayment * 100) / parameters.PropertyValue;
             summary.InitialInterest = CalcInterestMonth(summary.LoanAmount, parameters.InterestRate);
             summary.MonthlyMortgage = Math.Round(summary.LoanAmount * (Math.Pow((1 + interestRatePercent / 12), summary.LoanTermMonths) * interestRatePercent) / (12 * (Math.Pow((1 + interestRatePercent / 12), summary.LoanTermMonths) - 1)), 2);
-            summary.EndLoan = parameters.StartLoan.AddMonths(parameters.LoanTerm);
-
+            summary.EndLoan = parameters.StartLoan.AddYears(parameters.LoanTerm);
+            
             summary.TwentyPercent = 20 * parameters.PropertyValue / 100;
+            summary.TotalPayment = summary.MonthlyMortgage + summary.Insurance + summary.CondoTax + (summary.PropertyTax / 12);
 
             int current = 1;
-            double totalInterest = 0;
+           
             double totalPrincipal = parameters.DownPayment;
             double loanBalance = summary.LoanAmount;
 
@@ -49,10 +53,10 @@ namespace Loan
                 totalPrincipal += amortization.Principal;
                 amortization.TotalPrincipal = totalPrincipal;
 
-                totalInterest += amortization.Interest;
+                summary.TotalInterest += amortization.Interest;
                 loanBalance -= amortization.Principal;
 
-                amortization.TotalInterest = Math.Round(totalInterest, 2);
+                amortization.TotalInterest = Math.Round(summary.TotalInterest, 2);
                 amortization.LoanBalance = Math.Round(loanBalance, 2);
 
                 summary.Amortization.Add(amortization);

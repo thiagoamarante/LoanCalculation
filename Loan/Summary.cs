@@ -19,13 +19,14 @@ namespace Loan
         public double TwentyPercent { get; set; }
         public double LoanAmount { get; set; }
         public double LoanAmountPercent { get; set; }
-
-        public double PropertyTax { get; set; }
-        public double PMI { get; set; }
+               
+        public double TotalPayment { get; set; }
         public double MonthlyMortgage { get; set; }
         public double InitialInterest { get; set; }
 
         public DateTime EndLoan { get; set; }
+
+        public double TotalInterest { get; set; }
 
         public List<Amortization> Amortization { get; set; }
     }
